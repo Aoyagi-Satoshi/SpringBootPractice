@@ -17,10 +17,8 @@ public class Contact {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Long id;
-
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
-
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
@@ -44,10 +42,4 @@ public class Contact {
 
 	@Column(name = "body", nullable = false)
 	private String body;
-
-	@Column(name = "created_at")
-	private String createdAt;
-
-	@Column(name = "updated_at")
-	private String updatedAt;
 }
