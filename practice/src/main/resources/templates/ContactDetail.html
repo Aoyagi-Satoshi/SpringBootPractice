@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>お問い合わせ詳細画面</title>
+</head>
+
+<body>
+	<h1>お問い合わせ詳細画面</h1>
+
+	<table border="1">
+		<tr>
+			<th>お問い合わせID</th>
+			<th>姓</th>
+			<th>名</th>
+			<th>メールアドレス</th>
+			<th>電話番号</th>
+			<th>郵便番号</th>
+			<th>住所</th>
+			<th>建物名</th>
+			<th>お問い合わせ種別</th>
+			<th>内容</th>
+			<th>作成日時</th>
+			<th>更新日時</th>
+		</tr>
+
+		<tr>
+			<td th:text="${contactdetail.id}"></td>
+			<td th:text="${contactdetail.lastName}"></td>
+			<td th:text="${contactdetail.firstName}"></td>
+			<td th:text="${contactdetail.email}"></td>
+			<td th:text="${contactdetail.phone}"></td>
+			<td th:text="${contactdetail.zipCode}"></td>
+			<td th:text="${contactdetail.address}"></td>
+			<td th:text="${contactdetail.buildingName}"></td>
+			<td th:text="${contactdetail.contactType}"></td>
+			<td th:text="${contactdetail.body}"></td>
+			<td th:text="${#dates.format(contactdetail.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+			<td th:text="${#dates.format(contactdetail.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+		</tr>
+	</table>
+	<a th:href="@{/admin/contacts}">一覧画面へ戻る</a>
+	<a th:href="@{/admin/signup}">ログアウト</a>
+</body>
+
+</html>
