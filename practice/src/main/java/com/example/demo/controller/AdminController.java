@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.form.AdminForm;
 import com.example.demo.form.EditContactForm;
+import com.example.demo.service.AdminService;
 import com.example.demo.service.ContactService;
 
 @RequestMapping("/admin")
@@ -22,6 +24,8 @@ public class AdminController {
 
 	@Autowired
 	private ContactService contactService;
+	@Autowired
+	private AdminService adminService;
 
 	@GetMapping("/contacts")
 	public String adminContact(Model model) {
@@ -57,5 +61,27 @@ public class AdminController {
 	public String delete(@PathVariable Long id) {
 		contactService.delete(id);
 		return "redirect:/admin/contacts";
+	}
+
+	@GetMapping("/signup")
+	public String admin(Model model) {
+		model.addAttribute("adminForm", new AdminForm());
+		return "signup";
+	}
+
+	@PostMapping("/signup")
+	public String signup(@Validated @ModelAttribute("adminForm") AdminForm adminForm, BindingResult errorResult) {
+
+		if (errorResult.hasErrors()) {
+			return "signup";
+		}
+		adminService.saveAdmin(adminForm);
+		return "/admin/signin";
+	}
+
+	@GetMapping("/signin")
+	public String signin(Model model) {
+		model.addAttribute("adminForm", new AdminForm());
+		return "signin";
 	}
 }
