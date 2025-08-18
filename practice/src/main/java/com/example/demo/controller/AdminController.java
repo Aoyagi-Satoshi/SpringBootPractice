@@ -76,7 +76,7 @@ public class AdminController {
 			return "signup";
 		}
 		adminService.saveAdmin(adminForm);
-		return "/admin/signin";
+		return "redirect:/admin/signin";
 	}
 
 	@GetMapping("/signin")
