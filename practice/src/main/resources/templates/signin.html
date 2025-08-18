@@ -19,11 +19,11 @@
 			<tr>
 				<td>パスワード</td>
 				<td>
-					<input type="text" th:field="*{password}">
+					<input type="password" th:field="*{password}">
 				</td>
 			</tr>
 		</table>
-		<a href="@{/admin/login}">ログイン</a>
+		<button type="submit">ログイン</button>
 	</form>
 	<a th:href="@{/admin/signup}">新規登録はこちら</a>
 </body>

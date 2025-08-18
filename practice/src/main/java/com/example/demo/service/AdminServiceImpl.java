@@ -1,10 +1,13 @@
 package com.example.demo.service;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.AdminEntity;
@@ -12,37 +15,31 @@ import com.example.demo.form.AdminForm;
 import com.example.demo.repository.AdminRepositry;
 
 @Service
-public class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl implements AdminService, UserDetailsService {
 	@Autowired
 	private AdminRepositry adminRepositry;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-	@Override
+	@Transactional
 	public void saveAdmin(AdminForm adminForm) {
-
-		if (adminRepositry.existsByEmail(adminForm.getEmail())) {
-			throw new RuntimeException("このメールアドレスは既に登録されています");
-		}
 		AdminEntity admin = new AdminEntity();
 		admin.setLastName(adminForm.getLastName());
 		admin.setFirstName(adminForm.getFirstName());
 		admin.setEmail(adminForm.getEmail());
-		try {
-			String hashedPassword = hashPassword(adminForm.getPassword());
-			admin.setPassword(hashedPassword);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("パスワードのハッシュ化に失敗しました", e);
-		}
+		admin.setPassword(passwordEncoder.encode(adminForm.getPassword()));
 		adminRepositry.save(admin);
 	}
 
-	private String hashPassword(String password) throws NoSuchAlgorithmException {
-		MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
-		byte[] sha256_result = sha256.digest(password.getBytes());
-
-		StringBuilder stringBuilder = new StringBuilder();
-		{
-			stringBuilder.append(String.format("%02x", new BigInteger(1, sha256_result)));
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		AdminEntity admin = adminRepositry.findByEmail(email);
+		if (admin == null) {
+			throw new UsernameNotFoundException("管理者が見つかりません: " + email);
 		}
-		return stringBuilder.toString();
+		return User.withUsername(admin.getEmail())
+				.password(admin.getPassword())
+				.roles("ADMIN")
+				.build();
 	}
 }
